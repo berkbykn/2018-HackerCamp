@@ -1,0 +1,49 @@
+- Kablosuz Ağ Standartları
+- Kanallar
+- Tarım ve Temel Ayarlar
+- Aircrack-ng suite
+	- Airreplay
+	- Airmon
+	- Airbose
+	- Airodump
+	- Aircrack
+	- Wifite
+	- Fern Wifi Cracker***
+
+Kablosuz Ağ Standartları
+
+Temel Tanımlar
+- SSID/ESSID: Kablosuz Ağın İsmi
+- BSSID: Access Point'e ait MAC adresi
+- AP: Access Point
+- STA/Client: İstemci
+- Channel: Yayın yapılan kanal
+
+Wireless Kart Modları
+- Master Mode: Access Point Modudur (hotspot)
+- Managed Mode: İstemci Modu
+- Monitor Mode: Havadaki paketleri dinleyen mod
+"iwconfig komutuyla sadece network kartına ait ağ bilgilerini görebiliriz."
+
+Mod değiştirmek için;
+ifconfig wlan0 down (önce down edilmeli)
+iwconfig wlan0 mode monitor (komutuyla paket dinleyen moda geçilir)
+iwconfig wlan0 up
+iwconfig wlan0 channel <number> ile kanal dinlemek için değiştirilebilir.
+
+---
+
+Aircrack-ng Suite
+- Kablosuz ağ testlerinde kullanılan araç setidir.
+	- Airreplay (Paket tekrarı yaptırma aracı (deauthenticate/authentication))
+	- Airmon (Wireless kartımızı monitor moda almak için kullanılır) (airmon-ng start wlan0)
+	- Airbase (airbase-ng -e "Wi-Fi" -w "12345678901" -c 8 wlan0) (Sahte bir network yayını oluşturulabilir)
+	- Airodump (Havadaki paketleri yakalar) (airmon-ng start wlan0) (airmon-ng wlan0) (airdump wlan0 
+	- Aircrack 
+	- Airmon-ng
+  
+WPA2 PAROLA KIRMA SALDIRISI!
+- airodump-ng wlan0 -w paket.pcap (packet capture) kaydedildi.
+- aircrack-ng -w /wordlist paket.pcp --> 3 way handshake yakalamazsa parola kırma gerçekleşmiyor.
+- wifite aracı kullanışlı! araştır!
+- firmwifi cracker kali de hazır !!!! çok iyi tool.
