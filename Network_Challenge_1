@@ -1,0 +1,11 @@
+LLMNR ve WPAD
+
+Networkteki sistemler DNS çözümlemesi yapamadığında bir LLMNR ( Link Local Multicast Name Resolution ) isteği oluşturur ve tüm networke yayın yapar (broadcast).
+Dolayısıyla altyapısı DNS'e dayanır.
+
+Responder aracılığıyla saldırgan networkteki kullanıcı adı ve parolaları kendisine verilmesini bekler.
+UDP üzerinden yapılan broadcast yayınını ve cevapları dinleyebilir. Bu şekilde hedefin talep ettiği servisi öğrenmiş olur, böylelikle örneğin hedef makine printer sunucusuna bağlanmak isterken saldırgan bunu fark edip, kendi oluşturduğu sahte bir printer sunucusuna hedefin bağlanmasını sağlar. Saldırgan aldığı hashleri pass the hash yöntemiyle kullanabilir.
+
+
+WPAD (Web Proxy Autodiscovery Protocol) Otomatik Vekil Sunucu Keşif Protokolü. İnternete erişim için kullanılan bir vekil sunucunun adresini otomatik olarak ayarlayabilmek için kullanılan protokoldür. MiTM saldırısında, İçerik sağlayıcı (Responder) sahte bir WPAD Server ile istemciye adres çözümlemeyle saldırır. Saldırgan oluşturduğu bu sahte WPAD Server ile bir kullanıcı adı ve parola bağlantısı (authentication) ekranıyla login bilglerini alır. Saldırgan bu saldırı sonucu açık metin olarak parolaları ve kullanıcı bilgilerini görebilir. 
+( mitmf -i eth0 --spoof --arp --gateway 192.168.1.1 --responder --wpad gibi bir komutla çalıştırılabilir.)
